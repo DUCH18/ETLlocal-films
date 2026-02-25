@@ -6,8 +6,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 API_KEY = os.getenv('API_KEY')
-
-# url = 'https://api.themoviedb.org/3/movie/11?api_key=6d08570f07b4ef32282e6555d9e3d1c5'
 url =  f'https://api.themoviedb.org/3/movie/11?api_key={API_KEY}'
 
 def extract_film_data(url:str) -> list:
