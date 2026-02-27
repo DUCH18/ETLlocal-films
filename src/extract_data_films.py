@@ -1,22 +1,8 @@
 import requests
 import json
-from pathlib import Path
-import os
-from dotenv import load_dotenv
 
 
-env_folder_path = Path('.') / 'config' / '.env'
 
-load_dotenv(dotenv_path=env_folder_path)
-API_KEY = os.getenv('API_KEY')
-
-base_url = 'https://api.themoviedb.org/3/discover/movie'
-url_params = f'?api_key={API_KEY}&language=en-US&sort_by=popularity.desc'
-
-url = f"{base_url}{url_params}&page=1"
-# request the first five pages to gather roughly 100 movies
-pages = range(1, 6)
-urls = [f"{base_url}{url_params}&page={p}" for p in pages]
 
 def extract_film_data(urls) -> list:
     if isinstance(urls, str):
