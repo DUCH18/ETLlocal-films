@@ -1,6 +1,7 @@
 import requests
 import json
-
+from pathlib import Path
+import os
 
 
 
@@ -23,7 +24,8 @@ def extract_film_data(urls) -> list:
         print("Dados vazios")
         return []
 
-    raw_data_path = "../ETLlocal-films/data/raw/latest_films.json"
+    # raw_data_path = "../data/raw/latest_films.json"
+    raw_data_path = Path('.').parent.parent / 'data' / 'raw' / 'latest_films.json'
     with open(raw_data_path, 'w') as f:
         json.dump(all_movies, f, indent=4)
 
