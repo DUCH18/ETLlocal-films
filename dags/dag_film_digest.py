@@ -1,12 +1,10 @@
-from dotenv import load_dotenv
 
-from airflow import DAG
 from airflow.decorators import task, dag
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 import os
-
 from src.extract_data_films import extract_film_data
+from src.extract_data_genres import extract_genre_data
 from dotenv import load_dotenv
 
 
@@ -17,20 +15,31 @@ API_KEY = os.getenv('API_KEY')
 
 @dag(
     dag_id="dag_film_digest",
-    start_date=datetime(2026, 1, 1),
+    default_args = {
+        'owner' : 'airflow',
+        'depends_on_past': False,
+        'retries': 2,
+        'retry_delay': timedelta(minutes=5)
+    },
+    start_date= datetime(2026, 1, 1),
     schedule_interval="@daily",
     catchup=False,
-)
-
+) 
 def dag_ingest():
-    @task
-    def extract():
-        
 
+    @task
+    def extract_genre():
+        genre_url = f"https://api.themoviedb.org/3/genre/movie/list?api_key={API_KEY}"
+        extract_genre_data(genre_url)
+
+    @task
+    def extract_films():
+        
+        
         base_url = 'https://api.themoviedb.org/3/discover/movie'
         url_params = f'?api_key={API_KEY}&language=en-US&sort_by=popularity.desc'
 
-        url = f"{base_url}{url_params}&page=1"
+        # url = f"{base_url}{url_params}&page=1"
         # request the first five pages to gather roughly 100 movies
         pages = range(1, 6)
         urls = [f"{base_url}{url_params}&page={p}" for p in pages]
@@ -44,7 +53,7 @@ def dag_ingest():
     def transform():
         pass
 
-    extract() >> load() >> transform()
+    extract_films() >> extract_genre() >> transform() >> load() 
     
 dag_ingest()
 
