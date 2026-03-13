@@ -1,10 +1,10 @@
 
 from airflow.decorators import task, dag
 from datetime import datetime, timedelta
-
+from airflow.models import Variable
 from pathlib import Path
 import os
-from airflow.models import Variable
+
 
 from src.extract_data_films import extract_film_data
 from src.extract_data_genres import extract_genre_data
@@ -42,25 +42,27 @@ def dag_ingest():
     @task
     def extract_films():
         current_page = int(Variable.get("current_page", default_var=1))
-        url = f"https://api.themoviedb.org/3/discover/movie?api_key={API_KEY}&language=en-US&page={current_page}
+        url = f"https://api.themoviedb.org/3/discover/movie?api_key={API_KEY}&language=en-US&page={current_page}"
         
         return extract_film_data(url)
 
     @task
     def transform(genres):
-        return transform_films(genres, films)
+        return transform_films(genres)
      
     
     @task
     def load():
         # ...
+        current_page = int(Variable.get("current_page", default_var=1))
         Variable.set("current_page", current_page + 1) if current_page <= MAX_PAGES else Variable.set("current_page", 1)
     
 
 
     
 
-    extract_films() >> genres = extract_genres() >> transform(genres) >> load() 
+    extract_films() 
+    genres = extract_genres() >> transform(genres) >> load() 
     
 dag_ingest()
 

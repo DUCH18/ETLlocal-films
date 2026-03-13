@@ -17,9 +17,8 @@ def create_dataframe(json_path):
     df = pd.json_normalize(data["results"])
     return df
 
-def drop_film_cols(df:pd.DataFrame)->pd:DataFrame:
-    df = df.drop(columns=cols_to_drop)
-    return df 
+def drop_film_cols(df:pd.DataFrame)->pd.DataFrame:
+    return df.drop(columns=cols_to_drop)
 
 def enrich_film_genre(df:pd.DataFrame, data_genre)->pd.DataFrame:
     df_genre = pd.json_normalize(data_genre)
