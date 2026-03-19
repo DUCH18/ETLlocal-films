@@ -52,6 +52,8 @@ services:
       - "8080:8080"
     command: webserver
     restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   airflow-scheduler:
     image: apache/airflow:2.9.3
@@ -73,6 +75,8 @@ services:
       - ./data:/opt/airflow/data
     command: scheduler
     restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 volumes:
   postgres-db:
