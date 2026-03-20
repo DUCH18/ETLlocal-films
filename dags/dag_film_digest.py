@@ -81,15 +81,12 @@ def dag_ingest():
         films = pd.read_parquet("/opt/airflow/data/processed_silver/films.parquet")
         genres = pd.read_parquet("/opt/airflow/data/processed_silver/genres.parquet")
         persons = pd.read_parquet("/opt/airflow/data/processed_silver/persons.parquet")
-        current_page = int(Variable.get("current_page", default_var=1))
-        print(f"Current page: {current_page}")
-        if current_page < MAX_PAGES:
-            Variable.set("current_page", current_page + 1)
-        else:
-            Variable.set("current_page", 1)
+        current_page_films = int(Variable.get("current_page_films", default_var=1))
+        current_page_persons = int(Variable.get("current_page_films", default_var=1))
+        
 
 
-        load_data(films, genres, persons, current_page)
+        load_data(films, genres, persons, current_page_films, current_page_persons)
     
 
 
